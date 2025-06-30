@@ -1,0 +1,13 @@
+{
+  "servers": {
+    "mcp-nautobot-server": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "python", "-m", "mcp_nautobot_server"],
+      "env": {
+        "NAUTOBOT_URL": "https://nautobot.zt.vpsvc.com/",
+        "NAUTOBOT_TOKEN": "9dd16067076e3d8b5668d3e73a831b0a99220248"
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run MCP Nautobot Server",
+			"type": "shell",
+			"command": "uv run python -m mcp_nautobot_server",
+			"group": "test",
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

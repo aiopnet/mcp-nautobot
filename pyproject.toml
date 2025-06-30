@@ -1,0 +1,34 @@
+[project]
+name = "mcp-nautobot-server"
+version = "1.0.0"
+description = "MCP server for Nautobot IP address data integration"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "mcp>=1.10.1",
+    "httpx>=0.28.0",
+    "pydantic>=2.11.0",
+    "pydantic-settings>=2.10.0",
+    "python-dotenv>=1.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-httpx>=0.21.0",
+    "black>=24.0.0",
+    "isort>=5.13.0",
+    "mypy>=1.8.0",
+    "pre-commit>=3.6.0",
+]
+[[project.authors]]
+name = "Mike Lee"
+email = "michael@aiop.net"
+
+[build-system]
+requires = [ "hatchling",]
+build-backend = "hatchling.build"
+
+[project.scripts]
+mcp-nautobot-server = "mcp_nautobot_server:main"
