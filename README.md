@@ -1,253 +1,82 @@
-# MCP Nautobot Server
-
-[![MCP](https://img.shields.io/badge/MCP-1.0-blue)](https://github.com/anthropics/mcp)
-[![Python](https://img.shields.io/badge/Python-3.11+-green)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
-[![Nautobot](https://img.shields.io/badge/Nautobot-2.0+-orange)](https://nautobot.com/)
-
-A Model Context Protocol (MCP) server that integrates with [Nautobot](https://nautobot.com/) to provide network automation and infrastructure data to AI assistants like Claude. This server enables AI agents to query and interact with your network Source of Truth, making network operations more intelligent and accessible.
-
-## 🌟 Features
-
-- **Comprehensive IP Address Management**: Query and search IP addresses with advanced filtering
-- **Network Prefix Discovery**: Explore network prefixes with site and role-based filtering
-- **Device Inventory** (Coming Soon): Access device information including warranty and lifecycle data
-- **Asynchronous Operations**: Built on async/await for optimal performance
-- **Rate Limiting**: Protects your Nautobot instance from overload
-- **Enterprise-Ready**: Includes error handling, logging, and connection management
-- **AI-Optimized**: Responses formatted for optimal AI agent consumption
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Python 3.11 or higher
-- Access to a Nautobot instance (2.0+)
-- Nautobot API token with appropriate permissions
-- [uv](https://github.com/astral-sh/uv) package manager (recommended)
-
-### Installation
-
-1. **Clone the repository**:
-```bash
-git clone https://github.com/yourusername/mcp-nautobot.git
-cd mcp-nautobot
-```
-
-2. **Install dependencies**:
-```bash
-# Using uv (recommended)
-uv sync
-
-# Or using pip
-pip install -e .
-```
-
-3. **Configure environment**:
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your Nautobot credentials:
-```env
-NAUTOBOT_URL=https://your-nautobot-instance.com
-NAUTOBOT_TOKEN=your-api-token-here
-```
-
-4. **Test the connection**:
-```bash
-python test_connection.py
-```
-
-### Claude Desktop Integration
-
-Add to your Claude Desktop configuration:
-
-**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
-**Windows**: `%APPDATA%/Claude/claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "nautobot": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "/path/to/mcp-nautobot",
-        "run",
-        "mcp-nautobot-server"
-      ]
-    }
-  }
-}
-```
-
-## 📖 Usage
-
-Once configured, you can interact with Nautobot through Claude:
-
-### Example Queries
-
-- "Show me all IP addresses in the 10.0.0.0/8 network"
-- "Find all active IP addresses at the Reno site"
-- "Search for IP addresses with 'gateway' in the description"
-- "List all network prefixes for the production VRF"
-- "Check the connection status to Nautobot"
-
-### Available Tools
-
-| Tool | Description | Key Parameters |
-|------|-------------|----------------|
-| `get_ip_addresses` | Retrieve IP addresses with filtering | `prefix`, `status`, `site`, `vrf`, `limit` |
-| `get_prefixes` | Get network prefixes | `prefix`, `site`, `role`, `status` |
-| `search_ip_addresses` | Search IPs by keyword | `query`, `limit` |
-| `get_ip_address_by_id` | Get specific IP by ID | `ip_id` |
-| `test_connection` | Verify Nautobot connectivity | None |
-
-## 🛠️ Development
-
-### Project Structure
-
-```
-mcp-nautobot/
-├── src/
-│   └── mcp_nautobot_server/
-│       ├── __init__.py
-│       ├── __main__.py
-│       ├── server.py          # MCP server implementation
-│       └── nautobot_client.py  # Nautobot API client
-├── tests/                      # Test suite
-├── .env.example               # Environment template
-├── pyproject.toml             # Project configuration
-├── README.md                  # This file
-└── LICENSE                    # MIT license
-```
-
-### Running Tests
-
-```bash
-# Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=mcp_nautobot_server
-
-# Run specific test
-pytest tests/test_nautobot_client.py -v
-```
-
-### Development Mode
-
-```bash
-# Run server with debug logging
-LOG_LEVEL=DEBUG uv run mcp-nautobot-server
-
-# Use MCP Inspector for debugging
-npx @modelcontextprotocol/inspector uv --directory . run mcp-nautobot-server
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NAUTOBOT_URL` | Base URL of your Nautobot instance | Required |
-| `NAUTOBOT_TOKEN` | API authentication token | Required |
-| `NAUTOBOT_VERIFY_SSL` | Verify SSL certificates | `true` |
-| `NAUTOBOT_TIMEOUT` | Request timeout in seconds | `30` |
-| `NAUTOBOT_RATE_LIMIT` | Max requests per minute | `100` |
-| `LOG_LEVEL` | Logging level | `INFO` |
-
-### Advanced Configuration
-
-For custom field mappings, GraphQL queries, or enterprise features, see [CONFIGURATION.md](docs/CONFIGURATION.md).
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-### Development Setup
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests (`pytest`)
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-### Code Style
-
-- Follow PEP 8
-- Use type hints
-- Add docstrings to all public functions
-- Run `black` for formatting
-- Run `isort` for imports
-
-## 📋 Roadmap
-
-### Current Focus
-- [x] Basic IP address and prefix queries
-- [x] Search functionality
-- [x] Rate limiting and error handling
-- [ ] Response optimization for AI agents
-
-### Upcoming Features
-- [ ] Device inventory queries
-- [ ] GraphQL support
-- [ ] Bulk operations
-- [ ] Custom field support
-- [ ] Webhook integration
-- [ ] Circuit management
-- [ ] Configuration contexts
-
-### Future Enhancements
-- [ ] Multi-tenancy support
-- [ ] Advanced caching strategies
-- [ ] Prometheus metrics
-- [ ] OpenTelemetry tracing
-- [ ] Plugin architecture
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Connection Failed**
-- Verify Nautobot URL is accessible
-- Check API token permissions
-- Ensure network connectivity
-- Review firewall rules
-
-**Authentication Error**
-- Confirm token is valid
-- Check token hasn't expired
-- Verify user permissions in Nautobot
-
-**Rate Limiting**
-- Adjust `NAUTOBOT_RATE_LIMIT`
-- Implement caching for frequent queries
-- Use pagination for large datasets
-
-For more issues, see [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) or open an [issue](https://github.com/yourusername/mcp-nautobot/issues).
-
-## 📚 Resources
-
-- [MCP Documentation](https://modelcontextprotocol.io)
-- [Nautobot Documentation](https://docs.nautobot.com)
-- [Nautobot API Guide](https://docs.nautobot.com/projects/core/en/stable/user-guide/platform-functionality/rest-api/overview/)
-- [Python Async Best Practices](https://docs.python.org/3/library/asyncio.html)
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Anthropic](https://anthropic.com) for the Model Context Protocol
-- [Nautobot](https://nautobot.com) community for the excellent network Source of Truth platform
-- All contributors who help improve this integration
+Here is a review of your current README for positioning as a public open source distribution, along with specific recommendations for improvement and questions to clarify/confirm details before finalizing:
 
 ---
 
-**Note**: This is a community project and is not officially affiliated with or endorsed by Nautobot or Anthropic.
+## Overall Strengths
+
+- Good structure: Features, Quick Start, Usage, Configuration, Contributing, Roadmap.
+- Clear async/Python/Nautobot requirements.
+- Shields, features, and project intro are concise and helpful.
+- Usage and developer sections are practical and actionable.
+
+---
+
+## Recommendations and Corrections
+
+### 1. Repository URL and Branding
+
+- The clone URL in "Installation" uses `yourusername`. Update to the correct public repo URL:  
+  `git clone https://github.com/aiopnet/mcp-nautobot.git`
+- Confirm the repo will remain under `aiopnet/mcp-nautobot` for public distribution.
+
+### 2. Third Party References & Legal
+
+- The README uses the word “Claude” and references "Anthropic". Include a short disclaimer about no official affiliation (which you do at the end—good!). Consider placing this disclaimer up top as well, especially if you mention major companies in your opening paragraphs.
+
+### 3. Step-by-Step Instructions
+
+- Installation steps are clear. Recommend:
+  - Add a note on installing `uv` if not present (link to its install docs).
+  - Clarify that `pip install -e .` requires pip >=21.3 for editable installs with pyproject.toml (if using PEP 517/518 backend, confirm this).
+- The `.env.example` file should be present and up to date; confirm it syncs with all current environment variable options.
+
+### 4. Tooling and Testing
+
+- The test section is clear. If you require any special test dependencies (pytest plugins, coverage, etc.), note them explicitly in the dev/test setup.
+- Add a section on how to lint/format (`black`, `isort`). You mention them under "Code Style" but a command example is helpful.
+
+### 5. Configuration
+
+- Good use of a table for environment variables. Confirm all variables in the table are present/used in the codebase, and `.env.example` is in sync.
+- For “Advanced Configuration”: ensure `docs/CONFIGURATION.md` exists and is public.
+
+### 6. Usage and Integration
+
+- The Claude Desktop integration section is well written.
+- If you support other MCP-compatible clients or platforms, mention those or provide a pointer.
+- Add a note on security for API tokens (do not commit `.env`).
+
+### 7. Issue Reporting & Community
+
+- Update the “open an [issue]” link to point to the real GitHub issues page:  
+  `https://github.com/aiopnet/mcp-nautobot/issues`
+- Ensure `CONTRIBUTING.md` exists and is public, or remove the link/section until it does.
+
+### 8. Badges and Shields
+
+- The MCP badge references `https://github.com/anthropics/mcp`, but the standard MCP SDK is at `https://github.com/modelcontextprotocol/create-python-server`. Use the official repo for badges/documentation links.
+
+### 9. Documentation Links
+
+- Double-check all internal links (e.g., `docs/CONFIGURATION.md`, `TROUBLESHOOTING.md`, etc.) exist and are up to date before announcing to the public.
+- Recommend adding a “Documentation” badge if you host docs elsewhere in the future.
+
+### 10. Typo and Consistency Corrections
+
+- Standardize capitalization: “Nautobot”, “Claude”, “MCP”, etc.
+- Mention Python version requirements in the opening summary.
+- For “Device Inventory (Coming Soon)”: consider omitting features not yet started, or move all upcoming/roadmap features to a clear “Future Work” section.
+
+---
+
+## Clarification Needed
+
+- Are all variables in the `.env.example` file currently used by the server?
+- Is the server name for integration always `mcp-nautobot-server`? (Is this the main entrypoint script/module name?)
+- Are there any additional required environment variables for deployment (logging, third-party integrations, etc.) not listed?
+- Should users be aware of any legal, privacy, or security implications of exposing Nautobot data via this server?
+- Should an example Nautobot API token permissions scope be included?
+
+---
+
+Let me know if you want me to check or fetch specific variable names, links, or confirm what is in the `.env.example`, `CONTRIBUTING.md`, or other referenced files. I can review those for completeness and accuracy if you like.
